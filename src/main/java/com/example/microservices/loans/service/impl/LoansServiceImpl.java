@@ -9,6 +9,8 @@ import com.example.microservices.loans.constants.LoansConstants;
 import com.example.microservices.loans.dto.LoansDto;
 import com.example.microservices.loans.entity.Loans;
 import com.example.microservices.loans.exception.LoanAlreadyExistsException;
+import com.example.microservices.loans.exception.ResourceNotFoundException;
+import com.example.microservices.loans.mapper.LoansMapper;
 import com.example.microservices.loans.repository.LoansRepository;
 import com.example.microservices.loans.service.ILoansService;
 
@@ -43,20 +45,29 @@ public class LoansServiceImpl implements ILoansService {
 	@Override
 	public LoansDto fetchLoan(String mobileNumber) {
 		// TODO Auto-generated method stub
-		Loans loans = loansRepository.findByMobileNumber(mobileNumber).orElseThrow();
-		return null;
+		Loans loans = loansRepository.findByMobileNumber(mobileNumber).orElseThrow(()->new ResourceNotFoundException("Loan","mobileNumber",mobileNumber));
+		
+		return LoansMapper.mapToLoansDto(loans, new LoansDto());
 	}
 
 	@Override
 	public boolean updateLoan(LoansDto loansDto) {
 		// TODO Auto-generated method stub
-		return false;
+		Loans loans = loansRepository.findByLoanNumber(loansDto.getLoanNumber()).orElseThrow(
+                () -> new ResourceNotFoundException("Loan", "LoanNumber", loansDto.getLoanNumber()));
+        LoansMapper.mapToLoans(loansDto, loans);
+        loansRepository.save(loans);
+        return  true;
 	}
 
 	@Override
 	public boolean deleteLoan(String mobileNumber) {
 		// TODO Auto-generated method stub
-		return false;
+		 Loans loans = loansRepository.findByMobileNumber(mobileNumber).orElseThrow(
+	                () -> new ResourceNotFoundException("Loan", "mobileNumber", mobileNumber)
+	        );
+	        loansRepository.deleteById(loans.getLoanId());
+	        return true;
 	}
 
 }
