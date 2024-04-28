@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.example.microservices.loans.constants.LoansConstants;
 import com.example.microservices.loans.dto.LoansDto;
@@ -14,6 +15,10 @@ import com.example.microservices.loans.mapper.LoansMapper;
 import com.example.microservices.loans.repository.LoansRepository;
 import com.example.microservices.loans.service.ILoansService;
 
+import lombok.AllArgsConstructor;
+
+@Service
+@AllArgsConstructor
 public class LoansServiceImpl implements ILoansService {
 
 	@Autowired
